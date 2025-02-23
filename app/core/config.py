@@ -37,7 +37,7 @@ class DataBaseConfig(BaseModel):
 class Settings(BaseSettings):
     # параметр для подключения базы данных и чтения параметров из env файла
     model_config = SettingsConfigDict(
-        env_file=(".env.template", ".env"),
+        env_file=("app/.env.template", "app/.env"),
         case_sensitive=False,
         env_nested_delimiter="__", # делители в .env файле между классами и полями
         env_prefix="APP_CONFIG__" # начальный префих
