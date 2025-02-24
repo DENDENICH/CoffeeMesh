@@ -10,5 +10,4 @@ alembic
 black
 pyyaml
 
-flask
-marshmallow
+flask-smorest
