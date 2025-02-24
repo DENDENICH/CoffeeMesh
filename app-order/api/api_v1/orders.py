@@ -7,7 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core import settings
 from core.db import db_core
 
-from app.api.api_v1.schemas.order import UserRead
+from .schemas.order import (
+    CreateOrderSchema,
+    GetOrderSchema,
+    GetOrdersSchema
+)
 
 
 # создание роутера для api пользователя, импорт настроек префикса и тегов
@@ -17,7 +21,7 @@ router = APIRouter(
 )
 
 
-@router.get("/orders", response_model=list[UserRead])
+@router.get("/orders", response_model=GetOrdersSchema)
 async def get_user(
     session: AsyncSession = Depends(db_core.session_getter),
     cancelled: Optional[bool] = None,

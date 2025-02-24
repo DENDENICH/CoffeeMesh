@@ -8,6 +8,9 @@ info:
 
 
 servers:
+  # Добавление URL серверов для тестирования endpoints
+  - url: http://localhost:7654  # Тестирование на локальном сервере
+    description: URL for local development and testing
   - url: https://coffeemesh.com
     description: main production server
   - url: https://coffeemesh-staging.com
@@ -177,6 +180,7 @@ components:
       required:
         - details
     OrderItemSchema:
+      additionalProperties: false  # Запрещает использование доп. полей в модели
       type: object
       required:
         - product
@@ -197,6 +201,7 @@ components:
           minimum: 1
           maximum: 1000000
     CreateOrderSchema:
+      additionalProperties: false  # Запрещает использование доп. полей в модели
       type: object
       required:
         - order

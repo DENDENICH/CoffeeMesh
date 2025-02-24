@@ -5,7 +5,7 @@ from enum import Enum
 from uuid import UUID
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 from pydantic import conlist, conint
 
 
@@ -29,12 +29,20 @@ class OrderItemSchema(BaseModel):
     size: Size
     quantity: Optional[int] = 1
 
+    class Config:
+        extra = "allow"
 
-class CerateOrderSchema(BaseModel):
+
+class CreateOrderSchema(BaseModel):
+    """Модель представления объекта создание заказа"""
     order: List[OrderItemSchema]
+
+    class Config:
+        extra = "allow"
 
 
 class GetOrderSchema(BaseModel):
+    """Модель представления объекта отправки заказа"""
     id: UUID
     created: datetime
     status: Status
@@ -42,5 +50,6 @@ class GetOrderSchema(BaseModel):
 
 
 class GetOrdersSchema(BaseModel):
+    """Модель представления объекта отправки заказов"""
     order: List[GetOrderSchema]
     
