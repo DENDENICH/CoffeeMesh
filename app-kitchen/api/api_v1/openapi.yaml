@@ -8,7 +8,7 @@ info:
 
 servers:
   # Добавление URL серверов для тестирования endpoints
-  - url: http://localhost:7654  # Тестирование на локальном сервере
+  - url: http://localhost:7655  # Тестирование на локальном сервере
     description: URL for local development and testing
   - url: https://coffeemesh.com
     description: main production server
@@ -32,10 +32,10 @@ servers:
 # (POST) отменить запланированный заказ 
 
 paths:
-  /orders: # endpoint
+  /kitchen/schedules: # endpoint
     get:  # тип запроса 
       parameters:  # параметры запроса
-        - name: cancelled
+        - name: progress
           in: query
           required: false  # обязательный ли запрос
           schema:
@@ -45,67 +45,65 @@ paths:
           required: false
           schema:
             type: integer
-      summary: list of Orders
-      operationId: getOrders
+      summary: list of shedules
+      operationId: getShedules
       description: >
-        A list of orders made by customer sorted 
-        by cancelled status and/or limit count
+        A list of schedelu made by customer sorted 
+        by progress status and/or limit count
       responses:  # Модели ответов
         "200":
-          description: A JSON array of order items
+          description: A JSON array of shedule order
           content:
             application/JSON:
               schema:
                 type: object
                 properties:
                   order:
-                    type: array
-                    items: 
-                      $ref: '#/components/schemas/OrderItemSchema' 
+                    $ref: '#/components/schemas/GetScheduleOrdersSchema'
         "422":
           $ref: '#/components/responses/UnprocessableEntity'
       
     post:
-      summary: create order
-      operationId: createOrders
+      summary: create shedule
+      operationId: createShedules
       description: >
-        A JSON representation of the created order
+        A JSON representation of the created shedule
       requestBody:
         required: true
         content:
           application/JSON:
             schema:
-              $ref: '#/components/schemas/CreateOrderSchema'
+              $ref: '#/components/schemas/ScheduleOrderSchema'
       responses:
         "201":
-          description: A orders of create
+          description: A schedule of create
           content:
             application/JSON:
               schema:
-                $ref: '#/components/schemas/GetOrderSchema'
+                $ref: '#/components/schemas/GetScheduleOrderSchema'
         "422":
           $ref: '#/components/responses/UnprocessableEntity'
 
       
-  /orders/{order_id}: 
+  /kitchen/{schedule_id}:
     parameters:
       - in: path
-        name: order_id
+        name: schedule_id
         required: true
         schema:
           type: string
           format: UUID
 
     get:  # тип запроса 
-      summary: get order by id
-      operationId: getOrder
+      summary: get schedule by id
+      operationId: getSchedule
       responses:  # Модели ответов
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetOrderSchema'
+                $ref: '#/components/schemas/GetScheduleOrderSchema'
         "404":
           $ref: '#/components/responses/NotFound'
         "422":
@@ -119,14 +117,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateOrderSchema'
+              $ref: '#/components/schemas/ScheduleOrderSchema'
       responses:  # Модели ответов
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetOrderSchema'
+                $ref: '#/components/schemas/GetScheduleOrderSchema'
         "404":
           $ref: '#/components/responses/NotFound'
         "422":
@@ -143,10 +141,10 @@ paths:
         "422":
           $ref: '#/components/responses/UnprocessableEntity'
 
-  /orders/{order_id}/cancelled:
+  /kitchen/{schedule_id}/cancelled:
     parameters:
       - in: path
-        name: order_id
+        name: schedule_id
         required: true
         schema:
           type: string
@@ -161,12 +159,36 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetOrderSchema'
+                $ref: '#/components/schemas/GetScheduleOrderSchema'
         "404":
           $ref: '#/components/responses/NotFound'
         "422":
           $ref: '#/components/responses/UnprocessableEntity'
-
+  
+  /kitchen/{schedule_id}/status:
+    parameters:
+      - in: path
+        name: schedule_id
+        required: true
+        schema:
+          type: string
+          format: UUID
+          
+    get:  # тип запроса 
+      summary: get schedule by id
+      operationId: getStatusSchedule
+      responses:  # Модели ответов
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetScheduleOrderSchema'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "422":
+          $ref: '#/components/responses/UnprocessableEntity'
+        
 
 components:
   responses:
@@ -214,7 +236,7 @@ components:
           default: 1
           minimum: 1
           maximum: 1000000
-    CreateOrderSchema:
+    ScheduleOrderSchema:
       additionalProperties: false  # Запрещает использование доп. полей в модели
       type: object
       required:
@@ -225,7 +247,8 @@ components:
           minItems: 1
           items:
             $ref: '#/components/schemas/OrderItemSchema'
-    GetOrderSchema:
+    GetScheduleOrderSchema:
+      additionalProperties: false  # Запрещает использование доп. полей в модели
       type: object
       required:
         - id
@@ -242,11 +265,31 @@ components:
         status:
           type: string
           enum:
-            - created
+            - pending
             - progress
             - cancelled
-            - dispatched 
-            - delivered 
+            - finished 
         order:
           $ref: '#/components/schemas/OrderItemSchema'
+    GetScheduleOrdersSchema:
+      additionalProperties: false  # Запрещает использование доп. полей в модели
+      type: object
+      required:
+        - shedules
+      properties:
+        shedules:
+          $ref: '#/components/schemas/GetScheduleOrderSchema'
+    SheduleStatusSchema:
+      additionalProperties: false  # Запрещает использование доп. полей в модели
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - pending
+            - progress
+            - cancelled
+            - finished
 
