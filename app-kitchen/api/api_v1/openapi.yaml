@@ -45,6 +45,12 @@ paths:
           required: false
           schema:
             type: integer
+        - name: since
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
       summary: list of shedules
       operationId: getShedules
       description: >
