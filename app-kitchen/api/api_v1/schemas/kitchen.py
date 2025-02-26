@@ -52,6 +52,16 @@ class GetScheduleOrdersSchema(Schema):
     )
 
 
+class GetSheduleParameters(Schema):
+    """Параметры для получения заказов"""
+    class Meta:
+        unknow = EXCLUDE # запрет неизвестных свойств
+
+    progress = fields.Bool()
+    limit = fields.Integer()
+    since = fields.DateTime()
+
+
 class ScheduleStatusSchema(Schema):
     """Представление статуса заказа"""
     class Meta:
