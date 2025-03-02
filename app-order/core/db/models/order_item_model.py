@@ -10,7 +10,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .annotateds import intpk
-from ..base_model import Base
+from .base_model import Base
 
 
 def generate_datetime_now_utc():
